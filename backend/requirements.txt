@@ -30,6 +30,8 @@ langsmith==0.8.16
 orjson==3.11.9
 ormsgpack==1.12.2
 packaging==26.2
+psycopg2-binary==2.9.12
+SQLAlchemy==2.0.51
 pyasn1==0.6.3
 pyasn1_modules==0.4.2
 pycparser==3.0
