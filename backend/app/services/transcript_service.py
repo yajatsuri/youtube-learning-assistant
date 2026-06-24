@@ -69,13 +69,12 @@ def get_transcript(video_id: str):
         )
 
         return transcript_text
+        except Exception as e:
 
-    except Exception:
+    logger.exception(
+        f"Transcript fetch failed for video: {video_id}"
+    )
 
-        logger.exception(
-            f"Transcript fetch failed for video: {video_id}"
-        )
-
-        raise TranscriptUnavailableError(
-            f"Transcript unavailable for video: {video_id}"
-        )
+    raise TranscriptUnavailableError(
+        str(e)
+    )
