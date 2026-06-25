@@ -1,5 +1,9 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
+from app.database.init_db import init_db
 
 from app.middleware.logging_middleware import (
     logging_middleware
@@ -17,15 +21,25 @@ from app.routes.youtube import (
     router as youtube_router
 )
 
+
 setup_logging()
 
-app = FastAPI()
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    init_db()
+    yield
+
+
+app = FastAPI(
+    lifespan=lifespan
+)
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",
-         "https://youtube-learning-assistant-frontend-c92b.onrender.com",
+        "https://youtube-learning-assistant-frontend-c92b.onrender.com",
     ],
     allow_credentials=True,
     allow_methods=["*"],
