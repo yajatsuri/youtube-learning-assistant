@@ -1,79 +1,76 @@
+import os
 import re
 import logging
 
-from youtube_transcript_api import (
-    YouTubeTranscriptApi
-)
+import requests
+from dotenv import load_dotenv
 
 from app.exceptions.custom_exceptions import (
     InvalidYoutubeUrlError,
     TranscriptUnavailableError
 )
 
+load_dotenv()
+
 logger = logging.getLogger(__name__)
+
+SUPADATA_API_KEY = os.getenv("SUPADATA_API_KEY")
 
 
 def extract_video_id(url: str):
 
-    logger.info(
-        "Extracting video ID from URL"
-    )
+    logger.info("Extracting video ID from URL")
 
     pattern = r"(?:v=|\/)([0-9A-Za-z_-]{11})"
 
-    match = re.search(
-        pattern,
-        url
-    )
+    match = re.search(pattern, url)
 
     if not match:
-
-        logger.warning(
-            f"Invalid YouTube URL received: {url}"
-        )
 
         raise InvalidYoutubeUrlError(
             "Invalid YouTube URL"
         )
 
-    video_id = match.group(1)
+    return match.group(1)
+
+
+def get_transcript(youtube_url: str):
 
     logger.info(
-        f"Video ID extracted successfully: {video_id}"
-    )
-
-    return video_id
-
-
-def get_transcript(video_id: str):
-
-    logger.info(
-        f"Fetching transcript for video: {video_id}"
+        "Fetching transcript from Supadata"
     )
 
     try:
 
-        api = YouTubeTranscriptApi()
-
-        transcript = api.fetch(
-            video_id
+        response = requests.get(
+            "https://api.supadata.ai/v1/transcript",
+            headers={
+                "x-api-key": SUPADATA_API_KEY
+            },
+            params={
+                "url": youtube_url,
+                "text": "true"
+            },
+            timeout=60
         )
 
-        transcript_text = " ".join(
-            snippet.text
-            for snippet in transcript
-        )
+        response.raise_for_status()
 
-        logger.info(
-            "Transcript fetched successfully"
-        )
+        data = response.json()
 
-        return transcript_text
+        transcript = data.get("content")
+
+        if not transcript:
+            raise TranscriptUnavailableError(
+                "Transcript not found."
+            )
+
+        return transcript
 
     except Exception as e:
 
         logger.exception(
-            f"Transcript fetch failed for video: {video_id}"
+            "Supadata transcript fetch failed"
         )
 
         raise TranscriptUnavailableError(

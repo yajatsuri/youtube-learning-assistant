@@ -40,7 +40,7 @@ def generate_video_notes(
     )
 
     transcript = get_transcript(
-        video_id
+       youtube_url
     )
 
     notes = generate_notes(
