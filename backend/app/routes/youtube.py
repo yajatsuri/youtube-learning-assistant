@@ -1,4 +1,5 @@
 import json
+import traceback
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -50,10 +51,21 @@ def generate_notes_route(
     request: VideoRequest,
     db: Session = Depends(get_db)
 ):
-    return generate_video_notes(
-        db,
-        request.youtube_url
-    )
+    try:
+        return generate_video_notes(
+            db,
+            request.youtube_url
+        )
+
+    except Exception as e:
+        print("=" * 80)
+        print("UNHANDLED EXCEPTION")
+        traceback.print_exc()
+        print("=" * 80)
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )
 
 
 @router.get(
