@@ -24,12 +24,6 @@
 
 ---
 
-## 📸 Screenshot
-
-> _Add a screenshot or screen recording GIF here_
-
----
-
 ## 🧠 What It Does
 
 Paste a YouTube URL → get back three things instantly:
