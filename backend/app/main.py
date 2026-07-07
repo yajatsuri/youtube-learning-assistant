@@ -22,9 +22,9 @@ from app.routes.youtube import (
 )
 
 # NEW
-from app.routes.audio import (
-    router as audio_router
-)
+//from app.routes.audio import (
+  //  router as audio_router
+//)
 
 setup_logging()
 
@@ -68,7 +68,7 @@ app.include_router(
     youtube_router
 )
 
-# NEW
-app.include_router(
-    audio_router
-)
+//# NEW
+//app.include_router(
+//    audio_router
+//)
