@@ -21,11 +21,6 @@ from app.routes.youtube import (
     router as youtube_router
 )
 
-# NEW
-//from app.routes.audio import (
-  //  router as audio_router
-//)
-
 setup_logging()
 
 
@@ -67,8 +62,3 @@ def home():
 app.include_router(
     youtube_router
 )
-
-//# NEW
-//app.include_router(
-//    audio_router
-//)
